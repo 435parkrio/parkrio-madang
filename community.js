@@ -74,6 +74,7 @@
         const { error } = await client.auth.signUp({
           email, password,
           options: {
+            emailRedirectTo: location.origin + location.pathname,
             data: {
               full_name: authForm.elements.fullName.value.trim(),
               building: authForm.elements.building.value.trim(),
