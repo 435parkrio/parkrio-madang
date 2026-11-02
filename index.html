@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#faf8f3">
+  <meta name="description" content="파크리오 이웃이 함께 이야기를 나누고 안건을 제안하는 비공식 주민 홈페이지">
+  <title>파크리오마당 | 이웃의 이야기가 모이는 곳</title>
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js"></script>
+  <script defer src="config.js"></script>
+  <script src="app.js" defer></script>
+  <script src="community.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">본문으로 건너뛰기</a>
+
+  <header class="site-header">
+    <div class="header-inner wrap">
+      <a class="brand" href="#home" aria-label="파크리오마당 홈"><span>파크리오<span class="brand-accent">마당</span></span></a>
+      <nav class="desktop-nav" aria-label="주 메뉴">
+        <a href="#notice" data-nav="notice">공지사항</a>
+        <a href="#talk" data-nav="talk">자유로운 이야기</a>
+        <a href="#proposal" data-nav="proposal">안건제안</a>
+        <a href="#resources" data-nav="resources">자료실</a>
+      </nav>
+      <div class="header-actions">
+        <button class="text-button" type="button" data-auth="login">로그인</button>
+        <button class="button button-small" type="button" data-auth="signup">회원가입 <span aria-hidden="true">↗</span></button>
+        <button class="text-button member-only" id="profileButton" type="button" hidden>내 정보</button>
+        <button class="text-button member-only" id="logoutButton" type="button" hidden>로그아웃</button>
+      </div>
+      
+    </div>
+    <nav class="mobile-nav" id="mobileMenu" aria-label="모바일 메뉴">
+      <a href="#notice">공지사항</a><a href="#talk">자유로운 이야기</a><a href="#proposal">안건제안</a><a href="#resources">자료실</a>
+      <div><button type="button" data-auth="login">로그인</button><button type="button" data-auth="signup">회원가입</button><button type="button" class="member-only" data-profile hidden>내 정보</button><button type="button" class="member-only" data-logout hidden>로그아웃</button></div>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="hero wrap" id="home" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="eyebrow-line"></span> Parkrio Madang</div>
+        <h1 id="hero-title" class="visually-hidden">파크리오마당</h1>
+        
+        
+        
+      </div>
+      <div class="hero-image-wrap"><img src="assets/파크리오 문주 사진(1).png" alt="파크리오 문주와 단지 풍경을 담은 주민 제공 원본 이미지" class="hero-image"></div>
+    </section>
+
+    <section class="intro wrap" aria-label="홈페이지 안내"><div class="intro-kicker">A PLACE FOR US <span>↗</span></div><p>서로의 생각을 듣고, 일상을 나누고,<br>더 좋은 우리 아파트를 함께 만들어갑니다.</p><span class="intro-flower" aria-hidden="true">✳</span></section>
+
+    <section class="content-section wrap" id="notice" aria-labelledby="notice-title">
+      <div class="section-heading"><div><span class="section-number">01 / NOTICE</span><h2 id="notice-title">공지사항<span class="heading-period">.</span></h2><p>운영 안내와 중요한 소식을 확인하세요.</p></div><span class="section-icon" aria-hidden="true">↗</span></div>
+      <div id="noticeList" class="community-list" aria-live="polite"><div class="empty-board"><div class="empty-symbol" aria-hidden="true">✳</div><div><strong>공지사항을 불러오는 중입니다.</strong></div></div></div>
+    </section>
+
+    <section class="content-section wrap" id="talk" aria-labelledby="talk-title">
+      <div class="section-heading"><div><span class="section-number">02 / CONVERSATION</span><h2 id="talk-title">자유로운 이야기<span class="heading-period">.</span></h2><p>일상 속 반가운 소식과 생각을 나누는 공간입니다.</p></div><button class="button button-small" id="newPostButton" type="button">글쓰기 <span aria-hidden="true">↗</span></button></div>
+      <div class="talk-empty" id="talkPhoto"><div class="talk-photo"><img src="assets/자유로운 이야기 사진.png" alt="봄꽃이 핀 아파트 마당의 조형물" loading="lazy"></div><div class="talk-empty-copy"><div class="talk-illustration" aria-hidden="true"><span>안녕!</span><span>반가워요</span></div><h3>이웃과 이야기를 나눠요</h3><p>이메일 인증 후 글과 댓글을 작성할 수 있습니다.</p><button class="button-outline" type="button" data-auth="signup">회원가입 살펴보기 <span aria-hidden="true">→</span></button></div></div>
+      <div class="board-toolbar"><label>이야기 검색 <input id="postSearch" type="search" placeholder="제목이나 내용 검색"></label><span id="boardCount"></span></div>
+      <div id="boardList" class="community-list" aria-live="polite"></div>
+    </section>
+
+    <section class="proposal-section" id="proposal" aria-labelledby="proposal-title"><div class="wrap proposal-layout"><div class="proposal-intro"><span class="section-number">03 / PROPOSAL</span><h2 id="proposal-title">더 나은 일상을 위한<br><em>우리의 제안.</em></h2><p>생활 속에서 떠오른 생각을 안건으로 정리해 보세요. 별지 제7호서식의 항목을 온라인 작성 흐름으로 옮겼습니다.</p><div class="proposal-steps"><div><span>01</span> 제안 내용 작성</div><div><span>02</span> 메일 앱에서 발송</div><div><span>03</span> 수신 여부 확인</div></div><div class="proposal-disclaimer">현재는 메일 앱을 통해 안건 내용을 보낼 수 있습니다. 사이트 내 접수·처리와 첨부파일 자동 전송은 서버 연결 후 사용할 수 있습니다.</div></div>
+      <div class="proposal-card"><div class="card-top"><div><span>별지 제7호서식 기반</span><h3>안건제안서</h3></div><span class="form-badge">메일 작성</span></div><div class="rules-panel" aria-labelledby="rules-title"><div class="rules-panel-head"><span>안건 작성 안내</span><strong id="rules-title">파크리오아파트 관리규약 제37조(안건의 제안)</strong></div><ol><li>① 안건은 [별지 제7호서식]에 따라 동별 대표자, 관리사무소장 또는 입주자등이 제안할 수 있다.</li><li>② 안건을 제안하는 자가 제안이유와 주요 내용을 제시하면 관리사무소장은 제안자와 협의 후 비용추계서, 근거 등을 첨부하여 회장에게 서면으로 제출하여야 한다.</li><li>③ 회장은 제2항에 따라 안건이 제출된 때에는 입주자대표회의에 상정하여야 한다. 다만, 인신공격, 사생활, 반복적인 제안 등은 입주자대표회의의 의결을 거쳐 추후 안건 상정 대상에서 제외할 수 있으며, 이 경우 제외 사유를 제안자에게 서면, 전자우편 또는 휴대전화 문자 등의 방법으로 알려야 한다.</li></ol><p>아래 메일 발송은 관리사무소 수신 주소로 보내는 것입니다. 관리규약에 따른 관리사무소장의 회장 서면 제출이나 입주자대표회의 상정을 대신하지 않습니다.</p></div><form id="proposalForm"><div class="form-grid"><label>제목 <span class="required">*</span><input name="title" type="text" placeholder="안건 제목을 입력해 주세요" required maxlength="120"></label><label>제출자 <span class="required">*</span><input name="submitter" type="text" placeholder="성명 또는 동·호수" required maxlength="80"></label></div><div class="admin-fields"><div><small>의안번호</small><strong>접수 후 운영자 부여</strong></div><div><small>의결일 · 의결사항</small><strong>심의 후 운영자 기록</strong></div></div><label>1. 의결주문 <span class="required">*</span><textarea name="resolution" rows="3" placeholder="어떤 결정을 요청하는지 적어 주세요" required></textarea></label><label>2. 제안이유 <span class="required">*</span><textarea name="reason" rows="3" placeholder="이 안건을 제안하는 이유를 적어 주세요" required></textarea></label><label>3. 주요내용 <span class="required">*</span><textarea name="details" rows="4" placeholder="구체적인 내용을 적어 주세요" required></textarea></label><label>4. 비용추계서<textarea name="cost" rows="3" placeholder="예상 비용과 산출 근거를 적어 주세요. 해당 없으면 생략할 수 있습니다."></textarea></label><fieldset><legend>5. 참고사항</legend><div class="form-grid"><label>가. 근거규정<textarea name="regulation" rows="2" placeholder="관련 규정이 있다면 적어 주세요"></textarea></label><label>나. 기타<textarea name="other" rows="2" placeholder="그 밖의 참고 내용을 적어 주세요"></textarea></label></div></fieldset><label class="file-label">첨부파일 <span class="optional">선택</span><input id="attachment" type="file" multiple accept=".pdf,.png,.jpg,.jpeg,.webp,.doc,.docx,.hwp,.hwpx"><span class="file-display" id="fileDisplay">파일 선택 <span aria-hidden="true">＋</span></span></label><p class="form-footnote">메일 초안에 작성일이 자동 기재됩니다. 첨부파일은 메일 앱에서 직접 추가해야 합니다. 메일 앱에서 보내기를 눌러야 실제 발송됩니다.</p><div class="form-actions"><button class="draft-button" id="saveDraft" type="button">이 기기에 임시저장</button><button class="button" type="submit">메일 앱에서 보내기 <span aria-hidden="true">→</span></button></div><p class="form-status" id="formStatus" role="status" aria-live="polite"></p></form></div></div></section>
+    <section class="resource-section wrap" id="resources" aria-labelledby="resources-title">
+      <div class="section-heading"><div><span class="section-number">04 / LIBRARY</span><h2 id="resources-title">자료실<span class="heading-period">.</span></h2><p>법·규약·규정과 그 밖의 참고자료를 모아봅니다.</p></div><span class="section-icon" aria-hidden="true">↗</span></div>
+      <div class="resource-tabs" role="group" aria-label="자료 분류">
+        <button type="button" data-library-category="law" aria-pressed="true">법</button>
+        <button type="button" data-library-category="rules" aria-pressed="false">규약과 규정</button>
+        <button type="button" data-library-category="other" aria-pressed="false">기타</button>
+      </div>
+      <div class="resource-layout">
+        <div class="resource-list-panel">
+          <div class="resource-list-heading"><strong id="resourceCategoryTitle">법</strong><span id="resourceCount">0개 자료</span></div>
+          <ul id="resourceList" class="resource-list" aria-live="polite"></ul>
+          <div id="resourceEmpty" class="resource-empty"><span aria-hidden="true">✳</span><strong>아직 등록된 자료가 없습니다.</strong><p>입력란에서 파일이나 링크를 추가할 수 있습니다.</p></div>
+        </div>
+        <form id="resourceForm" class="resource-form">
+          <div class="resource-form-head"><h3>자료 추가</h3><span>이 기기에서만 보관</span></div>
+          <p>추가한 자료는 현재 브라우저에만 저장됩니다. 다른 주민에게 공개되거나 서버로 전송되지 않습니다.</p>
+          <label>자료 제목 <span class="required">*</span><input name="resourceTitle" type="text" maxlength="120" placeholder="자료 제목을 입력해 주세요" required></label>
+          <label>분류 <select name="resourceCategory"><option value="law">법</option><option value="rules">규약과 규정</option><option value="other">기타</option></select></label>
+          <fieldset class="resource-kind"><legend>등록 방식</legend><label><input type="radio" name="resourceKind" value="file" checked> 파일 첨부</label><label><input type="radio" name="resourceKind" value="link"> 링크</label></fieldset>
+          <label id="resourceFileField">첨부파일 <span class="required">*</span><input name="resourceFile" type="file" accept=".pdf,.png,.jpg,.jpeg,.webp,.doc,.docx,.hwp,.hwpx,.xlsx,.xls,.txt"></label>
+          <label id="resourceLinkField" hidden>링크 주소 <span class="required">*</span><input name="resourceLink" type="url" inputmode="url" placeholder="https://example.com"></label>
+          <label>간단한 설명 <span class="optional">선택</span><textarea name="resourceDescription" rows="3" maxlength="500" placeholder="자료에 대한 설명을 적어 주세요"></textarea></label>
+          <button class="button" type="submit">이 기기에 자료 추가 <span aria-hidden="true">＋</span></button>
+          <p id="resourceStatus" class="resource-status" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+    <section id="adminPanel" class="admin-panel wrap" hidden aria-labelledby="adminTitle"><h2 id="adminTitle">운영자 관리</h2><p>공지 작성과 게시글 관리, 회원 이용 제한을 이곳에서 진행합니다.</p><button class="button" id="newNoticeButton" type="button">공지 작성</button><div id="adminMembers"></div></section>
+  </main>
+
+  <footer class="site-footer"><div class="wrap footer-main"><div><a class="brand footer-brand" href="#home"><span>파크리오<span class="brand-accent">마당</span></span></a><p>가까운 이웃과 나누는 이야기,<br>함께 만드는 우리의 마당.</p></div><p id="operatorInfo">운영 주체: 미정 · 문의처: 미정</p></div><div class="wrap footer-bottom"><span>© 파크리오마당</span><span>이 사이트는 개인·주민 모임이 운영하는 비공식 홈페이지이며, 공식 입주자대표회의·관리사무소 사이트가 아닙니다.</span></div></footer>
+
+  <dialog id="authDialog" class="auth-dialog community-dialog" aria-labelledby="authTitle"><button class="dialog-x" type="button" data-close="authDialog" aria-label="닫기">×</button><h2 id="authTitle">로그인</h2><p id="authIntro">이메일로 로그인하세요.</p><form id="authForm"><div id="signupFields" hidden><label>이름 <input name="fullName" type="text" maxlength="80" autocomplete="name"></label><div class="form-grid"><label>동 <input name="building" type="text" maxlength="20"></label><label>호수 <input name="unit" type="text" maxlength="20"></label></div><label>게시판 별명 <input name="nickname" type="text" minlength="2" maxlength="30"></label><p class="form-footnote">이메일 인증은 이메일 사용 확인이며 실제 입주민 자격 확인은 아닙니다. 동·호수는 가입자가 직접 입력합니다.</p></div><label>이메일 <input name="email" type="email" autocomplete="email" required></label><label id="passwordField">비밀번호 <input name="password" type="password" minlength="8" autocomplete="current-password" required></label><button class="button" type="submit" id="authSubmit">로그인</button><p class="form-status" id="authStatus" role="status" aria-live="polite"></p></form><div class="dialog-links"><button type="button" data-auth="signup">회원가입</button><button type="button" data-auth="login">로그인</button><button type="button" data-auth="reset">비밀번호 재설정</button></div></dialog>
+  <dialog id="postDialog" class="community-dialog" aria-labelledby="postDialogTitle"><button class="dialog-x" type="button" data-close="postDialog" aria-label="닫기">×</button><h2 id="postDialogTitle">글쓰기</h2><form id="postForm"><input name="id" type="hidden"><label>제목 <input name="title" type="text" maxlength="120" required></label><label>내용 <textarea name="body" rows="9" maxlength="5000" required></textarea></label><label id="noticeAudienceField" hidden>공지 공개 범위 <select name="audience"><option value="public">전체 공개</option><option value="members">로그인 회원만</option></select></label><button class="button" type="submit">저장하기</button><p class="form-status" id="postStatus" role="status" aria-live="polite"></p></form></dialog>
+  <dialog id="detailDialog" class="community-dialog detail-dialog" aria-labelledby="detailTitle"><button class="dialog-x" type="button" data-close="detailDialog" aria-label="닫기">×</button><p class="section-number" id="detailKind"></p><h2 id="detailTitle"></h2><p class="post-meta" id="detailMeta"></p><div class="post-body" id="detailBody"></div><div class="post-actions" id="detailActions"></div><section id="commentSection"><h3>댓글</h3><div id="commentList"></div><form id="commentForm"><label>댓글 작성 <textarea name="body" rows="3" maxlength="2000" required></textarea></label><button class="button button-small" type="submit">댓글 등록</button><p class="form-status" id="commentStatus" role="status" aria-live="polite"></p></form></section></dialog>
+  <dialog id="profileDialog" class="community-dialog" aria-labelledby="profileTitle"><button class="dialog-x" type="button" data-close="profileDialog" aria-label="닫기">×</button><h2 id="profileTitle">내 정보</h2><form id="profileForm"><label>이메일 <input name="email" type="email" disabled></label><label>이름 <input name="fullName" type="text" maxlength="80"></label><div class="form-grid"><label>동 <input name="building" type="text" maxlength="20"></label><label>호수 <input name="unit" type="text" maxlength="20"></label></div><label>게시판 별명 <input name="nickname" type="text" minlength="2" maxlength="30" required></label><button class="button" type="submit">정보 저장</button><p class="form-status" id="profileStatus" role="status" aria-live="polite"></p></form><div class="profile-operations"><button id="changePasswordButton" type="button">비밀번호 변경 메일</button><button id="deleteAccountButton" type="button">회원 탈퇴</button></div></dialog>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
