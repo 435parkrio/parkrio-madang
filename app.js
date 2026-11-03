@@ -1,6 +1,15 @@
 const form = document.querySelector('#proposalForm');
 const status = document.querySelector('#formStatus');
 const draftKey = 'parkriomadang-proposal-draft-v1';
+const directMailEnabled = window.PARKRIO_SUPABASE?.directMailEnabled === true;
+
+if (directMailEnabled) {
+  document.querySelector('.proposal-disclaimer').textContent = '로그인한 회원은 제안서 파일과 선택한 첨부파일을 관리사무소 수신 주소로 보낼 수 있습니다. 발송 결과를 확인한 뒤 접수 여부는 관리사무소에 확인해 주세요.';
+  document.querySelector('.proposal-steps').innerHTML = '<div><span>01</span> 제안 내용 작성</div><div><span>02</span> 제안서와 파일 발송</div><div><span>03</span> 수신 여부 확인</div>';
+  document.querySelector('.form-badge').textContent = '파일로 발송';
+  document.querySelector('.form-footnote').textContent = '제출일이 자동 기록된 제안서가 HTML 파일로 첨부됩니다. 선택한 파일도 함께 발송됩니다. 한 번에 최대 5개, 파일당 5MB, 총 8MB까지 첨부할 수 있습니다.';
+  form.querySelector('button[type="submit"]').innerHTML = '제안서와 첨부파일 보내기 <span aria-hidden="true">→</span>';
+}
 
 const draftFields = ['title','submitter','resolution','reason','details','cost','regulation','other'];
 try {
@@ -24,7 +33,7 @@ document.querySelector('#attachment').addEventListener('change', event => {
   document.querySelector('#fileDisplay').textContent = files.length ? files.map(file => file.name).join(', ') : '파일 선택 ＋';
 });
 
-form.addEventListener('submit', event => {
+form.addEventListener('submit', async event => {
   event.preventDefault();
   if (!form.reportValidity()) return;
   const value = name => form.elements[name].value.trim();
@@ -32,6 +41,28 @@ form.addEventListener('submit', event => {
     timeZone: 'Asia/Seoul', year: 'numeric', month: '2-digit', day: '2-digit'
   }).format(new Date());
   const attachments = [...document.querySelector('#attachment').files];
+  if (directMailEnabled) {
+    const client = window.PARKRIO_CLIENT;
+    if (!client) { status.textContent = '회원 기능에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.'; return; }
+    const { data: { user }, error: authError } = await client.auth.getUser();
+    if (authError || !user) { status.textContent = '메일로 보내려면 먼저 로그인해 주세요.'; return; }
+    const payload = new FormData(form);
+    attachments.forEach(file => payload.append('attachment', file));
+    const submitButton = form.querySelector('button[type="submit"]');
+    submitButton.disabled = true;
+    status.textContent = '제안서와 첨부파일을 보내는 중입니다…';
+    try {
+      const { data, error } = await client.functions.invoke('send-proposal', { body: payload });
+      if (error || !data?.ok) throw new Error(data?.error || error?.message || '발송 실패');
+      status.textContent = '제안서와 첨부파일을 발송했습니다. 관리사무소에 수신 여부를 확인해 주세요.';
+      try { localStorage.removeItem(draftKey); } catch { /* Local storage may be unavailable. */ }
+      form.reset();
+      document.querySelector('#fileDisplay').textContent = '파일 선택 ＋';
+    } catch (error) {
+      status.textContent = `발송하지 못했습니다. ${error.message || '잠시 후 다시 시도해 주세요.'}`;
+    } finally { submitButton.disabled = false; }
+    return;
+  }
   const body = [
     '파크리오마당 안건제안서',
     '별지 제7호서식 기반',

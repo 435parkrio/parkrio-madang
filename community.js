@@ -13,6 +13,7 @@
   const client = window.supabase?.createClient && config?.url && config?.publishableKey
     ? window.supabase.createClient(config.url, config.publishableKey)
     : null;
+  window.PARKRIO_CLIENT = client;
   let user = null;
   let profile = null;
   let restricted = false;
